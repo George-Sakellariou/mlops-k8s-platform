@@ -1,0 +1,54 @@
+{
+  "iris_classifier_v1": {
+    "model_type": "RandomForestClassifier",
+    "framework": "scikit-learn",
+    "accuracy": 1.0,
+    "features": 4,
+    "classes": 3,
+    "training_samples": 120,
+    "hyperparameters": {
+      "n_estimators": 100,
+      "random_state": 42
+    },
+    "created_date": "2025-07-04T08:30:00Z",
+    "use_case": "Multi-class classification of iris flowers",
+    "input_features": ["sepal length (cm)", "sepal width (cm)", "petal length (cm)", "petal width (cm)"],
+    "output_classes": ["setosa", "versicolor", "virginica"]
+  },
+  "iris_classifier_v2": {
+    "model_type": "RandomForestClassifier",
+    "framework": "scikit-learn",
+    "accuracy": 1.0,
+    "features": 4,
+    "classes": 3,
+    "training_samples": 120,
+    "hyperparameters": {
+      "n_estimators": 200,
+      "max_depth": 5,
+      "min_samples_split": 5,
+      "random_state": 42
+    },
+    "created_date": "2025-07-04T08:30:00Z",
+    "use_case": "Improved iris classification with regularization",
+    "improvements": "Reduced overfitting with depth limit",
+    "input_features": ["sepal length (cm)", "sepal width (cm)", "petal length (cm)", "petal width (cm)"],
+    "output_classes": ["setosa", "versicolor", "virginica"]
+  },
+  "churn_predictor_v1": {
+    "model_type": "LogisticRegression",
+    "framework": "scikit-learn",
+    "accuracy": 0.95,
+    "features": 4,
+    "classes": 2,
+    "training_samples": 800,
+    "hyperparameters": {
+      "max_iter": 1000,
+      "random_state": 42
+    },
+    "created_date": "2025-07-04T08:30:00Z",
+    "use_case": "Binary classification for customer churn prediction",
+    "input_features": ["age", "monthly_charges", "tenure_months", "support_calls"],
+    "output_classes": ["no_churn", "churn"],
+    "business_impact": "Reduces customer acquisition cost by identifying at-risk customers"
+  }
+}
