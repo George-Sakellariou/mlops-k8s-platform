@@ -70,7 +70,7 @@ async def upload_model(
             version=next_version,
             file_path=file_path,
             filename=file.filename,
-            model_metadata=metadata,
+            model_metadata=metadata,  # Make sure this is 'model_metadata'
             file_size=len(file_content)
         )
         

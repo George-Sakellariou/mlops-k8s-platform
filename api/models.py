@@ -24,7 +24,7 @@ class ModelVersion(Base):
     version = Column(Integer, nullable=False)
     file_path = Column(String(500), nullable=False)
     filename = Column(String(255), nullable=False)
-    metadata = Column(Text, default="{}")
+    model_metadata = Column(Text, default="{}")  # Changed from 'metadata' to 'model_metadata'
     file_size = Column(BigInteger)
     created_at = Column(DateTime, default=datetime.utcnow)
     

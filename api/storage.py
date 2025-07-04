@@ -2,7 +2,6 @@ from minio import Minio
 from minio.error import S3Error
 import os
 import io
-from typing import bytes
 
 class MinIOStorage:
     def __init__(self):
