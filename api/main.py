@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends, File, UploadFile, Form
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
+from contextlib import asynccontextmanager
 import io
 import logging
 from datetime import datetime
@@ -20,19 +21,12 @@ logger = logging.getLogger(__name__)
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(
-    title="ML Model Registry API",
-    description="API for managing ML models and versions",
-    version="1.0.0",
-    debug=settings.API_DEBUG
-)
-
 # Initialize MinIO storage
 storage = MinIOStorage()
 
-@app.on_event("startup")
-async def startup_event():
-    """Initialize storage on startup"""
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
     logger.info("Starting ML Model Registry API...")
     logger.info(f"Environment: {settings.ENVIRONMENT}")
     logger.info(f"Database URL: {settings.DATABASE_URL}")
@@ -41,6 +35,19 @@ async def startup_event():
     
     await storage.create_bucket_if_not_exists()
     logger.info("API startup complete")
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down ML Model Registry API...")
+
+app = FastAPI(
+    title="ML Model Registry API",
+    description="API for managing ML models and versions",
+    version="1.0.0",
+    debug=settings.API_DEBUG,
+    lifespan=lifespan
+)
 
 @app.get("/health")
 async def health_check():
