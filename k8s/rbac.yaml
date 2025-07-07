@@ -1,0 +1,84 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ml-operator
+  namespace: ml-platform
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ml-operator
+rules:
+# ModelDeployment CRD permissions
+- apiGroups: ["ml.example.com"]
+  resources: ["modeldeployments"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+# Core API permissions
+- apiGroups: [""]
+  resources: ["services", "endpoints", "pods", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+# Apps API permissions  
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+# Autoscaling permissions
+- apiGroups: ["autoscaling"]
+  resources: ["horizontalpodautoscalers"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+
+# Events for status updates
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create", "patch"]
+
+# Required for kopf operator framework
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["create"]
+- apiGroups: ["coordination.k8s.io"]
+  resources: ["leases"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ml-operator
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ml-operator
+subjects:
+- kind: ServiceAccount
+  name: ml-operator
+  namespace: ml-platform
+---
+# Additional role for namespace-specific operations
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: ml-platform
+  name: ml-operator-namespace
+rules:
+- apiGroups: [""]
+  resources: ["pods/log", "pods/status"]
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources: ["pods/exec"]
+  verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ml-operator-namespace
+  namespace: ml-platform
+subjects:
+- kind: ServiceAccount
+  name: ml-operator
+  namespace: ml-platform
+roleRef:
+  kind: Role
+  name: ml-operator-namespace
+  apiGroup: rbac.authorization.k8s.io

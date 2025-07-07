@@ -1,0 +1,25 @@
+apiVersion: ml.example.com/v1
+kind: ModelDeployment
+metadata:
+  name: iris-classifier
+  namespace: ml-platform
+  labels:
+    model: iris-classifier
+    environment: development
+spec:
+  modelName: iris-classifier
+  modelVersion: 1
+  replicas: 2
+  environment: development
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70

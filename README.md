@@ -1,4 +1,3 @@
-cat > README.md << 'EOF'
 # MLOps Kubernetes Platform
 
 A comprehensive ML model serving platform built with Python, Kubernetes, and DevOps best practices.

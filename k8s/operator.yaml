@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-operator
+  namespace: ml-platform
+  labels:
+    app: ml-operator
+    component: operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ml-operator
+  template:
+    metadata:
+      labels:
+        app: ml-operator
+        component: operator
+    spec:
+      serviceAccountName: ml-operator
+      containers:
+      - name: operator
+        image: ml-platform/operator:latest
+        imagePullPolicy: Never  # For local development with minikube
+        env:
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: OPERATOR_NAME
+          value: "ml-operator"
+        - name: LOG_LEVEL
+          value: "INFO"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 20
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          failureThreshold: 1
+---
+# Service for operator health checks and metrics
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-operator-service
+  namespace: ml-platform
+  labels:
+    app: ml-operator
+    component: operator
+spec:
+  selector:
+    app: ml-operator
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP

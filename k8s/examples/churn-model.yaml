@@ -1,0 +1,25 @@
+apiVersion: ml.example.com/v1
+kind: ModelDeployment
+metadata:
+  name: churn-predictor
+  namespace: ml-platform
+  labels:
+    model: churn-predictor
+    environment: production
+spec:
+  modelName: churn-predictor
+  modelVersion: 1
+  replicas: 3
+  environment: production
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "500m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 80
