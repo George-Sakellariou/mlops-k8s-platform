@@ -17,7 +17,7 @@ class ModelResponse(BaseModel):
 class ModelVersionResponse(BaseModel):
     model_config = ConfigDict(
         from_attributes=True,
-        protected_namespaces=()  # This fixes the model_name warning
+        protected_namespaces=()
     )
     
     id: int
